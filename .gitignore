@@ -1,0 +1,6 @@
+# openapi-generator-cli local install
+/node_modules/
+# archived pre-codegen prototype: kept locally, not shipped
+/archive/
+# macOS
+.DS_Store
