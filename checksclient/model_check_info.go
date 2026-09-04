@@ -19,21 +19,37 @@ var _ MappedNullable = &CheckInfo{}
 
 // CheckInfo struct for CheckInfo
 type CheckInfo struct {
+	// The repository name that this check applies to.
 	Repository *string `json:"repository,omitempty"`
+	// The change number that this check applies to.
 	ChangeNumber *int32 `json:"change_number,omitempty"`
+	// The patch set that this check applies to.
 	PatchSetId *int32 `json:"patch_set_id,omitempty"`
+	// The UUID of the checker that reported this check.
 	CheckerUuid *string `json:"checker_uuid,omitempty"`
+	// The state as string-serialized form of CheckState
 	State *CheckState `json:"state,omitempty"`
+	// Short message explaining the check state. Size limit is 10k by default, configured via plugin.checks.messageSizeLimit.
 	Message *string `json:"message,omitempty"`
+	// A fully-qualified URL pointing to the result of the check on the checker's infrastructure.
 	Url *string `json:"url,omitempty"`
+	// The timestamp of when the check started processing.
 	Started *string `json:"started,omitempty"`
+	// The timestamp of when the check finished processing.
 	Finished *string `json:"finished,omitempty"`
+	// The timestamp of when the check was created.
 	Created *string `json:"created,omitempty"`
+	// The timestamp of when the check was last updated.
 	Updated *string `json:"updated,omitempty"`
+	// The name of the checker that produced this check.<br />Only set if checker details are requested.
 	CheckerName *string `json:"checker_name,omitempty"`
+	// The status of the checker that produced this check.<br />Only set if checker details are requested.
 	CheckerStatus *CheckerStatus `json:"checker_status,omitempty"`
+	// Set of blocking conditions that apply to this checker.<br />Only set if checker details are requested.
 	Blocking []BlockingCondition `json:"blocking,omitempty"`
+	// The CheckSubmitImpactInfo that describes a check's impact on the submission of the change.<br />Only set if checker details are requested.
 	SubmitImpact *CheckSubmitImpactInfo `json:"submit_impact,omitempty"`
+	// The description of the checker that reported this check.
 	CheckerDescription *string `json:"checker_description,omitempty"`
 }
 

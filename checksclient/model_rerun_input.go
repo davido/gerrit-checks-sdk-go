@@ -19,7 +19,9 @@ var _ MappedNullable = &RerunInput{}
 
 // RerunInput struct for RerunInput
 type RerunInput struct {
+	// Notify handling that defines to whom email notifications should be sent when the combined check state changes due to rerunning this check. Allowed values are NONE, OWNER, OWNER_REVIEWERS and ALL. If not set, the default is OWNER.
 	Notify *NotifyHandling `json:"notify,omitempty"`
+	// Additional information about whom to notify when the combined check state changes due to rerunning this check as a map of recipient type to NotifyInfo entity. Regardless of this setting there are no email notifications for rerunning checks on non-current patch sets.
 	NotifyDetails map[string]NotifyInfo `json:"notify_details,omitempty"`
 }
 

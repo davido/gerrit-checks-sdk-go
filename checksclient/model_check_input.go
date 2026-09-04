@@ -19,13 +19,21 @@ var _ MappedNullable = &CheckInput{}
 
 // CheckInput struct for CheckInput
 type CheckInput struct {
+	// The UUID of the checker. Must be specified for check creation. Optional only if updating a check and referencing the checker using the UUID in the URL.
 	CheckerUuid *string `json:"checker_uuid,omitempty"`
+	// The state as string-serialized form of CheckState
 	State *CheckState `json:"state,omitempty"`
+	// Short message explaining the check state.
 	Message *string `json:"message,omitempty"`
+	// A fully-qualified URL pointing to the result of the check on the checker's infrastructure.
 	Url *string `json:"url,omitempty"`
+	// The timestamp of when the check started processing.
 	Started *string `json:"started,omitempty"`
+	// The timestamp of when the check finished processing.
 	Finished *string `json:"finished,omitempty"`
+	// Notify handling that defines to whom email notifications should be sent when the combined check state changes due to posting this check. Allowed values are NONE, OWNER, OWNER_REVIEWERS and ALL.
 	Notify *NotifyHandling `json:"notify,omitempty"`
+	// Additional information about whom to notify when the combined check state changes due to posting this check as a map of recipient type to NotifyInfo entity. Regardless of this setting there are no email notifications for posting checks on non-current patch sets.
 	NotifyDetails map[string]NotifyInfo `json:"notify_details,omitempty"`
 }
 

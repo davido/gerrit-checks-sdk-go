@@ -31,7 +31,7 @@ type ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest struct {
 	revisionId string
 }
 
-func (r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) Execute() (map[string]interface{}, *http.Response, error) {
+func (r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) Execute() (interface{}, *http.Response, error) {
 	return r.ApiService.GetChangesChangeIdRevisionsRevisionIdChecksExecute(r)
 }
 
@@ -55,13 +55,13 @@ func (a *ChangesAPIService) GetChangesChangeIdRevisionsRevisionIdChecks(ctx cont
 }
 
 // Execute executes the request
-//  @return map[string]interface{}
-func (a *ChangesAPIService) GetChangesChangeIdRevisionsRevisionIdChecksExecute(r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) (map[string]interface{}, *http.Response, error) {
+//  @return interface{}
+func (a *ChangesAPIService) GetChangesChangeIdRevisionsRevisionIdChecksExecute(r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) (interface{}, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  map[string]interface{}
+		localVarReturnValue  interface{}
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChangesAPIService.GetChangesChangeIdRevisionsRevisionIdChecks")
@@ -116,7 +116,7 @@ func (a *ChangesAPIService) GetChangesChangeIdRevisionsRevisionIdChecksExecute(r
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-			var v map[string]interface{}
+			var v interface{}
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -412,7 +412,7 @@ func (r ApiPostChangesChangeIdRevisionsRevisionIdChecksCheckIdRequest) Execute()
 /*
 PostChangesChangeIdRevisionsRevisionIdChecksCheckId Update Check
 
-Updates a check. The semantics are the same as for [CreateCheck](#create-check).
+Updates a check. The semantics are the same as for CreateCheck.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param changeId
@@ -539,7 +539,7 @@ func (r ApiPostChangesChangeIdRevisionsRevisionIdChecksCheckIdRerunRequest) Exec
 /*
 PostChangesChangeIdRevisionsRevisionIdChecksCheckIdRerun Rerun Check
 
-Reruns a check. As response the [CheckInfo](#check-info) entity is returned that describes the created check.
+Reruns a check. As response the CheckInfo entity is returned that describes the created check.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param changeId
