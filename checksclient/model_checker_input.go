@@ -19,13 +19,21 @@ var _ MappedNullable = &CheckerInput{}
 
 // CheckerInput struct for CheckerInput
 type CheckerInput struct {
+	// The UUID of the checker.
 	Uuid *string `json:"uuid,omitempty"`
+	// The name of the checker.
 	Name *string `json:"name,omitempty"`
+	// The description of the checker.
 	Description *string `json:"description,omitempty"`
+	// The URL of the checker.
 	Url *string `json:"url,omitempty"`
+	// The (exact) name of the repository for which the checker applies.
 	Repository *string `json:"repository,omitempty"`
+	// The status of the checker; one of ENABLED or DISABLED.
 	Status *CheckerStatus `json:"status,omitempty"`
+	// A list of conditions that describe when the checker should block change submission.
 	Blocking []BlockingCondition `json:"blocking,omitempty"`
+	// A query that limits changes for which the checker is relevant.
 	Query *string `json:"query,omitempty"`
 }
 

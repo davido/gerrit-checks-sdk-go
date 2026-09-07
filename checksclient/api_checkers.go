@@ -33,7 +33,9 @@ func (r ApiGetPluginsChecksCheckersRequest) Execute() ([]CheckerInfo, *http.Resp
 }
 
 /*
-GetPluginsChecksCheckers Method for GetPluginsChecksCheckers
+GetPluginsChecksCheckers List Checkers
+
+Retrieves all checkers.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiGetPluginsChecksCheckersRequest
