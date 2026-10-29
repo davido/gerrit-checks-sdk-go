@@ -45,4 +45,18 @@ echo "2/2 drop non-shipped generator scaffolding"
 # test/docs stubs carry placeholder GIT_USER_ID/GIT_REPO_ID imports; the rest is noise.
 (cd checksclient && rm -rf test docs api .travis.yml git_push.sh .openapi-generator-ignore README.md .gitignore)
 
-echo "done: checksclient/ regenerated from $SPEC"
+# README is protected by .openapi-generator-ignore, so the generator never rewrites it.
+# Sync ONLY its Gerrit-version tokens to $VERSION (the spec's info.version, derived above)
+# so the 3.15->3.16 class of drift cannot recur. Each substitution is anchored to the
+# Gerrit-version context (the `checks `, `tagged **`v`, `list-checks@v`, `sdk-go/v3@v`
+# strings); it must NEVER touch the /v3 semantic-import suffix or any unrelated number.
+VRE='[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}\(-SNAPSHOT\)\{0,1\}'
+sed -i.bak \
+  -e "s|\(checks \`\)${VRE}|\1${VERSION}|g" \
+  -e "s|\(tagged \*\*\`v\)${VRE}|\1${VERSION}|g" \
+  -e "s|\(list-checks@v\)${VRE}|\1${VERSION}|g" \
+  -e "s|\(sdk-go/v3@v\)${VRE}|\1${VERSION}|g" \
+  README.md
+rm -f README.md.bak
+
+echo "done: checksclient/ regenerated from $SPEC; README Gerrit version synced to $VERSION"

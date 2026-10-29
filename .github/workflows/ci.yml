@@ -1,0 +1,43 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # The SDK generator is the Java-based openapi-generator-cli, invoked via npx,
+      # so CI needs BOTH a Node runtime and a JDK (temurin 17) in addition to Go.
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      # Regen-drift gate: regenerate from the committed spec (default, self-contained --
+      # no network spec fetch) and fail if the checked-in SDK or README version drifts
+      # from a fresh regeneration.
+      - name: Regenerate SDK (default committed spec)
+        run: ./generate.sh
+
+      - name: Fail on regeneration drift
+        run: git diff --exit-code
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        run: go test ./...
