@@ -30,8 +30,8 @@ not just for gerrit-core.
 
 ## Version
 
-Generated from **checks `3.15.0-SNAPSHOT`** (the plugin inherits Gerrit's version) and
-tagged **`v3.15.0-SNAPSHOT`**. The Go module carries the `/v3` suffix (semantic import
+Generated from **checks `3.16.0-SNAPSHOT`** (the plugin inherits Gerrit's version) and
+tagged **`v3.16.0-SNAPSHOT`**. The Go module carries the `/v3` suffix (semantic import
 versioning), exactly like `gerrit-sdk-go`.
 
 ## What's in this repo
@@ -103,7 +103,7 @@ same red `Zuul Check Pipeline / Change failed` the Web UI does. (Pass flags dire
 Once pushed and tagged, the same import path is fetched from the VCS for any consumer:
 
 ```bash
-go run github.com/davido/gerrit-checks-sdk-go/v3/examples/list-checks@v3.15.0-SNAPSHOT --change 623324
+go run github.com/davido/gerrit-checks-sdk-go/v3/examples/list-checks@v3.16.0-SNAPSHOT --change 623324
 ```
 
 ## Use it
@@ -126,7 +126,7 @@ check, _, err := client.ChangesAPI.
 ```
 
 ```bash
-go get github.com/davido/gerrit-checks-sdk-go/v3@v3.15.0-SNAPSHOT
+go get github.com/davido/gerrit-checks-sdk-go/v3@v3.16.0-SNAPSHOT
 ```
 
 Go modules publish by **git tag** — there is no artifact to upload; `go get` fetches the
