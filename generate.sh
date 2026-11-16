@@ -20,9 +20,14 @@ set -euo pipefail
 cd "$(dirname "$0")"
 SPEC="${1:-rest-api-openapi.json}"
 
-# Reuse the spec straight from a running Gerrit: pass a URL and it is fetched into the
-# checked-in snapshot before generation. The checks plugin serves its own document at
+# By default the committed rest-api-openapi.json is used, so generation is self-contained
+# and needs no network.
+#
+# Optionally pass a URL to fetch the spec into the checked-in snapshot before generation.
+# The intent is that a running Gerrit with the checks plugin serves its own document at
 #   https://<host>/plugins/checks/Documentation/rest-api-openapi.json
+# NOTE: the per-plugin OpenAPI output is not deployed upstream yet, so that URL is
+# aspirational and currently returns 404. Prefer the committed spec until it ships.
 if [[ "$SPEC" == http://* || "$SPEC" == https://* ]]; then
   echo "0/2 fetch spec from $SPEC"
   curl -fsSL "$SPEC" -o rest-api-openapi.json
@@ -48,12 +53,12 @@ echo "2/2 drop non-shipped generator scaffolding"
 # README is protected by .openapi-generator-ignore, so the generator never rewrites it.
 # Sync ONLY its Gerrit-version tokens to $VERSION (the spec's info.version, derived above)
 # so the 3.15->3.16 class of drift cannot recur. Each substitution is anchored to the
-# Gerrit-version context (the `checks `, `tagged **`v`, `list-checks@v`, `sdk-go/v3@v`
-# strings); it must NEVER touch the /v3 semantic-import suffix or any unrelated number.
+# Gerrit-version context (the `checks `, `tagged `v`, `list-checks@v`, `sdk-go/v3@v`
+# strings). It must NEVER touch the /v3 semantic-import suffix or any unrelated number.
 VRE='[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}\(-SNAPSHOT\)\{0,1\}'
 sed -i.bak \
   -e "s|\(checks \`\)${VRE}|\1${VERSION}|g" \
-  -e "s|\(tagged \*\*\`v\)${VRE}|\1${VERSION}|g" \
+  -e "s|\(tagged \`v\)${VRE}|\1${VERSION}|g" \
   -e "s|\(list-checks@v\)${VRE}|\1${VERSION}|g" \
   -e "s|\(sdk-go/v3@v\)${VRE}|\1${VERSION}|g" \
   README.md
