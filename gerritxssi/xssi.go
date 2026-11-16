@@ -28,7 +28,7 @@ func NewTransport(base http.RoundTripper) http.RoundTripper {
 }
 
 // Client returns an *http.Client whose transport strips the guard. Assign it to
-// gerritclient.Configuration.HTTPClient.
+// checksclient.Configuration.HTTPClient.
 func Client() *http.Client {
 	return &http.Client{Transport: NewTransport(nil)}
 }
