@@ -32,6 +32,9 @@ if [[ "$SPEC" == http://* || "$SPEC" == https://* ]]; then
   echo "0/2 fetch spec from $SPEC"
   curl -fsSL "$SPEC" -o rest-api-openapi.json
   SPEC=rest-api-openapi.json
+elif [[ "$SPEC" != rest-api-openapi.json && ! "$SPEC" -ef rest-api-openapi.json ]]; then
+  cp "$SPEC" rest-api-openapi.json
+  SPEC=rest-api-openapi.json
 fi
 
 VERSION=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["info"]["version"])' "$SPEC")

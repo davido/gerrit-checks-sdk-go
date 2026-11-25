@@ -29,9 +29,21 @@ type ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest struct {
 	ApiService *ChangesAPIService
 	changeId string
 	revisionId string
+	o *string
+	o2 *[]string
 }
 
-func (r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) Execute() (interface{}, *http.Response, error) {
+func (r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) O(o string) ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest {
+	r.o = &o
+	return r
+}
+
+func (r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) O2(o2 []string) ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest {
+	r.o2 = &o2
+	return r
+}
+
+func (r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) Execute() ([]CheckInfo, *http.Response, error) {
 	return r.ApiService.GetChangesChangeIdRevisionsRevisionIdChecksExecute(r)
 }
 
@@ -55,13 +67,13 @@ func (a *ChangesAPIService) GetChangesChangeIdRevisionsRevisionIdChecks(ctx cont
 }
 
 // Execute executes the request
-//  @return interface{}
-func (a *ChangesAPIService) GetChangesChangeIdRevisionsRevisionIdChecksExecute(r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) (interface{}, *http.Response, error) {
+//  @return []CheckInfo
+func (a *ChangesAPIService) GetChangesChangeIdRevisionsRevisionIdChecksExecute(r ApiGetChangesChangeIdRevisionsRevisionIdChecksRequest) ([]CheckInfo, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  interface{}
+		localVarReturnValue  []CheckInfo
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChangesAPIService.GetChangesChangeIdRevisionsRevisionIdChecks")
@@ -77,6 +89,20 @@ func (a *ChangesAPIService) GetChangesChangeIdRevisionsRevisionIdChecksExecute(r
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
+	if r.o != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "O", r.o, "form", "")
+	}
+	if r.o2 != nil {
+		t := *r.o2
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "o", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "o", t, "form", "multi")
+		}
+	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -116,14 +142,6 @@ func (a *ChangesAPIService) GetChangesChangeIdRevisionsRevisionIdChecksExecute(r
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-			var v interface{}
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 

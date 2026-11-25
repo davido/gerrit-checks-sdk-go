@@ -83,18 +83,17 @@ The case-colliding `O`/`o` query params are handled by the go generator on its o
 (distinct struct fields). Core's `--parameter-name-mappings r=regexFilter` is not
 needed here. The checks API has no such collision.
 
-One emitter limitation to know: the checks list endpoint is a synthesized
-collection GET, so the emitted spec models its response as a skeleton
-`{type:object}` and the generated `Execute()` returns an untyped map. The example
-therefore decodes the array into the generated `CheckInfo` model directly (over
-the same XSSI transport). Single-check `GET .../checks/{id}` is fully typed to
-`*CheckInfo`.
+The generated list operation returns `[]CheckInfo` and exposes the `O` and `o`
+query options. The example requests `o=CHECKER` through `.O2([]string{"CHECKER"})`
+to include checker names, status, and submit impact, using the same XSSI
+transport. Single-check `GET .../checks/{id}` returns `*CheckInfo`.
 
 ## Build & test
 
 ```bash
 go build ./...        # build the SDK, transport, and example
 go vet ./...          # static checks
+go test ./...         # generated request, typed response, and XSSI integration
 ```
 
 ### Test it live, no publish needed

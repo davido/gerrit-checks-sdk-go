@@ -8,24 +8,19 @@
 // transport borrowed verbatim from gerrit-sdk-go -- the guard is identical on plugin
 // endpoints, so no plugin-specific handling is needed.
 //
-// Note on the list decode: the checks list endpoint is a SYNTHESIZED collection GET, and
-// the emitted spec models its response as a skeleton {type:object}, so the generated
-// Execute() returns an untyped map. We therefore decode the array into the generated
-// CheckInfo model directly, over the same XSSI-stripping transport. Single-check GET
-// (GetChangesChangeIdRevisionsRevisionIdChecksCheckId) is fully typed to *CheckInfo.
+// The generated list operation returns []CheckInfo. Request o=CHECKER to include
+// checker names, status, and submit impact.
 //
 //	go run github.com/davido/gerrit-checks-sdk-go/v3/examples/list-checks@latest --change 623324
 package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	cc "github.com/davido/gerrit-checks-sdk-go/v3/checksclient"
 	"github.com/davido/gerrit-checks-sdk-go/v3/gerritxssi"
@@ -48,32 +43,16 @@ func main() {
 	printChecks(base, *change, *revision, checks)
 }
 
-// listChecks fetches the revision's checks over the XSSI-stripping transport and decodes
-// them into the generated CheckInfo model. See the file header for why this is a manual
-// decode rather than the generated Execute() (skeleton collection-list response).
+// listChecks uses the generated operation and the Gerrit XSSI-stripping transport.
 func listChecks(ctx context.Context, base, change, revision string) ([]cc.CheckInfo, error) {
-	url := fmt.Sprintf("%s/changes/%s/revisions/%s/checks/", base, change, revision)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := gerritxssi.Client().Do(req) // strip Gerrit's )]}' guard
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("%s: %s", resp.Status, strings.TrimSpace(string(body)))
-	}
-	var checks []cc.CheckInfo
-	if err := json.Unmarshal(body, &checks); err != nil {
-		return nil, fmt.Errorf("decode checks: %w", err)
-	}
-	return checks, nil
+	cfg := cc.NewConfiguration()
+	cfg.Servers = cc.ServerConfigurations{{URL: base}}
+	cfg.HTTPClient = gerritxssi.Client()
+	cfg.HTTPClient.Timeout = 30 * time.Second
+	checks, _, err := cc.NewAPIClient(cfg).ChangesAPI.
+		GetChangesChangeIdRevisionsRevisionIdChecks(ctx, change, revision).
+		O2([]string{"CHECKER"}).Execute()
+	return checks, err
 }
 
 // ---- presentation -------------------------------------------------------------

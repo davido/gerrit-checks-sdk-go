@@ -19,7 +19,7 @@ var _ MappedNullable = &CheckSubmitImpactInfo{}
 
 // CheckSubmitImpactInfo struct for CheckSubmitImpactInfo
 type CheckSubmitImpactInfo struct {
-	// When set, that check blocks change submission until it's in appropriate non-blocking state.
+	// Boolean indicating whether this check blocks change submission until it's in an appropriate non-blocking state. Explicitly true or false when checker details are available. An absent value must not be interpreted as false.
 	Required *bool `json:"required,omitempty"`
 }
 
